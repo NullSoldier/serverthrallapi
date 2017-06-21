@@ -1,2 +1,5 @@
 django==1.11.2
 serpy==0.1.1
+gunicorn==19.6.0
+dj-database-url==0.4.1
+django-cors-headers==2.1.0

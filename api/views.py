@@ -23,9 +23,6 @@ class CharactersView(View):
 			.all())
 
 		data = CharacterSerializer(characters, many=True).data
-		print '====='
-		print data
-		print '====='
 		return JsonResponse(data, status=200, safe=False)
 
 class CharacterView(View):
