@@ -1,0 +1,43 @@
+from .base import BaseAdminView
+from api.models import Server
+from api.serializers import ServerAdminSerializer
+from django.http import JsonResponse, HttpResponse
+
+
+class ServerView(BaseAdminView):
+	def get(self, request, server_id):
+		if 'private_secret' not in request.GET:
+			return HttpResponse('missing required param private_secret')
+
+		data = request.GET
+
+		server = (Server.objects
+			.filter(id=server_id, private_secret=data['private_secret'])
+			.first())
+
+		if server is None:
+			return HttpResponse('server does not exist', status=404)
+
+		serialized = ServerAdminSerializer(server).data
+		return JsonResponse(serialized, status=200)
+
+	def post(self, request):
+		if 'private_secret' not in request.GET:
+			return HttpResponse('missing required param private_secret')
+
+		data = request.GET
+
+		server = (Server.objects
+			.filter(id=server_id, private_secret=data['private_secret'])
+			.first())
+
+		if server is None:
+			return HttpResponse('server does not exist', status=404)
+
+		server = Server()
+		if 'name' in data:
+			server.name = data['name']
+		server.save()
+
+		serialized = ServerAdminSerializer(server).data
+		return JsonResponse(data, status=200)

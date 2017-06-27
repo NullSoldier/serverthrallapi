@@ -6,16 +6,41 @@ from api.models import Character, Server
 from django.db.models import Q
 from api.serializers import CharacterSerializer, ServerAdminSerializer
 from uuid import uuid1
+from uuid import UUID
 from django.db import transaction
 from datetime import datetime
 import json
+import pytz
 
 
-class CharactersView(View):
+class BasePublicView(View):
+
+	def get_server(request, server_id):
+		return (Server.objects
+			.filter(id=server_id)
+			.filter(
+				Q(private_secret=request.GET.get('private_secret', None)) |
+				Q(public_secret=request.GET.get('public_secret', None)))
+			.first())
+
+
+class BaseAdminView(View):
+
+	def get_server(request, server_id):
+		return = (Server.objects
+			.filter(id=server_id)
+			.filter(public_secret=request.GET.get('public_secret', None))
+			.first())
+
+
+class CharactersView(BasePublicView):
 
 	def get(self, request, server_id):
 		server = (Server.objects
 			.filter(id=server_id)
+			.filter(
+				Q(private_secret=request.GET.get('private_secret', None)) |
+				Q(public_secret=request.GET.get('public_secret', None)))
 			.first())
 
 		if server is None:
@@ -29,7 +54,7 @@ class CharactersView(View):
 		return JsonResponse(serialized, status=200, safe=False)
 
 
-class CharacterView(View):
+class CharacterView(BasePublicView):
 
 	def get(self, request, server_id, character_id):
 		server = (Server.objects
@@ -52,7 +77,7 @@ class CharacterView(View):
 		return JsonResponse(serialized, status=200)
 
 
-class ServersViews(View):
+class ServersViews(BasePublicView):
 
 	def post(self, request):
 		server = Server()
@@ -61,10 +86,10 @@ class ServersViews(View):
 		server.save()
 
 		serialized = ServerAdminSerializer(server).data
-		return JsonResponse(data, status=200)
+		return JsonResponse(serialized, status=200)
 
 
-class ServerView(View):
+class ServerView(BaseAdminView):
 	def get(self, request, server_id):
 		if 'private_secret' not in request.GET:
 			return HttpResponse('missing required param private_secret')
@@ -103,7 +128,7 @@ class ServerView(View):
 		return JsonResponse(data, status=200)
 
 
-class SyncCharactersView(View):
+class SyncCharactersView(BaseAdminView):
 
 	def post(self, request, server_id):
 		if 'private_secret' not in request.GET:
@@ -122,22 +147,34 @@ class SyncCharactersView(View):
 			return HttpResponse('server does not exist', status=404)
 
 		with transaction.atomic():
-			Character.objects.filter(server=server).delete()
+			# Delete removed characters
+			id_set = [c['conan_id'] for c in data['characters']]
+			Character.objects.filter(server=server).filter(~Q(conan_id__in=id_set)).delete()
 
-			for character in data['characters']:
-				last_online = datetime.utcfromtimestamp(character['last_online'])
+			for sync_data in data['characters']:
 
-				Character.objects.create(
-					server=server,
-					name=character['name'],
-					level=character['level'],
-					is_online=character['is_online'],
-					steam_id=character['steam_id'],
-					conan_id=character['conan_id'],
-					last_killed_by=character['last_killed_by'],
-					last_online=last_online,
-					x=character['x'],
-					y=character['y'],
-					z=character['z'])
+				character = (Character.objects
+					.filter(conan_id=sync_data['conan_id'])
+					.first())
+
+				if character is None:
+					character = Character()
+
+				last_online = (datetime
+					.utcfromtimestamp(sync_data['last_online'])
+					.replace(tzinfo=pytz.utc))
+
+				character.conan_id = sync_data['conan_id']
+				character.server = server
+				character.name = sync_data['name']
+				character.level = sync_data['level']
+				character.is_online = sync_data['is_online']
+				character.steam_id = sync_data['steam_id']
+				character.last_killed_by = sync_data['last_killed_by']
+				character.x = sync_data['x']
+				character.y = sync_data['y']
+				character.z = sync_data['z']
+				character.last_online = last_online
+				character.save()
 
 		return HttpResponse(status=200)
