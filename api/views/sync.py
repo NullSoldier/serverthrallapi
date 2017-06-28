@@ -7,9 +7,10 @@ from django.http import HttpResponse
 from django.utils import timezone
 import json
 import pytz
-
+from api.plugins import GinfoPlugin
 
 class SyncCharactersView(BaseAdminView):
+	ginfoPlugin = GinfoPlugin()
 
 	def post(self, request, server_id):
 		now = timezone.now()
@@ -77,6 +78,7 @@ class SyncCharactersView(BaseAdminView):
 						x=character.x,
 						y=character.y,
 						z=character.z))
+					self.ginfoPlugin.update_position(character, '-Knj7Mt-7frt_Wtpvq_9')
 
 			# speed up history creation by creating in bulk
 			CharacterHistory.objects.bulk_create(history_buffer)
@@ -85,7 +87,7 @@ class SyncCharactersView(BaseAdminView):
 		history_threshold = timezone.now() - timedelta(days=5)
 		CharacterHistory.objects.filter(created__lt=history_threshold).delete()
 
+
 		server.last_sync = now
 		server.save()
-
 		return HttpResponse(status=200)
