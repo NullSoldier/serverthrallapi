@@ -78,7 +78,8 @@ class SyncCharactersView(BaseAdminView):
 						x=character.x,
 						y=character.y,
 						z=character.z))
-					self.ginfoPlugin.update_position(character, '-Knj7Mt-7frt_Wtpvq_9')
+					if 'ginfo_group_uid' in request.GET:
+						self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'])
 
 			# speed up history creation by creating in bulk
 			CharacterHistory.objects.bulk_create(history_buffer)
@@ -86,6 +87,7 @@ class SyncCharactersView(BaseAdminView):
 		# Delete history older than 5 days
 		history_threshold = timezone.now() - timedelta(days=5)
 		CharacterHistory.objects.filter(created__lt=history_threshold).delete()
+
 
 
 		server.last_sync = now
