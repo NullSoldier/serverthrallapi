@@ -67,7 +67,7 @@ class GinfoPlugin(object):
     DEFAULT_MARKER_TYPE = 1
     DEFAULT_MARKER_SKIN = 0
 
-    def update_position(self, character, group, marker_uid = None):
+    def update_position(self, character, group, access_token, marker_uid = None):
         """
           Posts the position of this character to Firebase
           @param character:
@@ -93,7 +93,8 @@ class GinfoPlugin(object):
                 "lng": lng
             },
             "type": self.DEFAULT_MARKER_TYPE,
-            "skin": self.DEFAULT_MARKER_SKIN
+            "skin": self.DEFAULT_MARKER_SKIN,
+            "accessToken": access_token
         }
 
         if (marker_uid == None or marker_uid == ""):
@@ -103,15 +104,17 @@ class GinfoPlugin(object):
                 url = self.url_post(group),
                 json=data
             )
+            # TODO: Check Response for Errors?
             # Firebase responds with the UID of the created marker
             json_data = json.loads(r.text)
             marker_uid = json_data["name"]
         else:
             # UID of existing marker availabe -> update existing marker via PATCH
-            requests.patch(
+            r = requests.patch(
                 url=self.url_patch(group, marker_uid),
                 json=data
             )
+            # TODO: Check Response for Errors?
         return marker_uid
 
 
