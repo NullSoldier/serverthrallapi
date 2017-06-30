@@ -69,7 +69,13 @@ class SyncCharactersView(BaseAdminView):
 				character.y              = sync_data['y']
 				character.z              = sync_data['z']
 				character.last_online    = last_online
+
+				if 'ginfo_group_uid' in request.GET:
+					marker_uid = self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'], character.ginfo_marker_uid)
+					if marker_uid:
+						character.ginfo_marker_uid = marker_uid
 				character.save()
+
 
 				if is_different:
 					history_buffer.append(CharacterHistory(

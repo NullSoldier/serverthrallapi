@@ -67,22 +67,27 @@ class GinfoPlugin(object):
     DEFAULT_MARKER_TYPE = 1
     DEFAULT_MARKER_SKIN = 0
 
-    def update_position(self, character, group):
+    def update_position(self, character, group, marker_uid = None):
         """
           Posts the position of this character to Firebase
+          @param character:
+                    The character for which the position should be updated
+          @param group:
+                    The group in which the marker should be postet
+          @param marker_uid:
+                    Firebase-UID of an existing marker to update (if available).
+                    If not available, a new marker will be created
         """
         (lat, lng) = self.convert_position(
             float(character.x), float(character.y))
         data = {
             "name": character.name,
             "updatedAt": {
+                # This tells firebase to use its internal timestamp
                 ".sv": "timestamp"
             },
             "color": self.DEFAULT_MARKER_COLOR,
             "creatorId": "TODO",
-            "createdAt": {
-                ".sv": "timestamp"
-            },
             "position": {
                 "lat": lat,
                 "lng": lng
@@ -91,11 +96,23 @@ class GinfoPlugin(object):
             "skin": self.DEFAULT_MARKER_SKIN
         }
 
-        url = self.url_patch(group, '-KnjCenU4ja7Ms7LF1mA')
-        requests.patch(
-            url=url,
-            json=data
-        )
+        if (marker_uid == None or marker_uid == ""):
+            # No marker uid available -> create a new marker via POST
+            data["createdAt"] = {".sv": "timestamp"}
+            r = requests.post(
+                url = self.url_post(group),
+                json=data
+            )
+            # Firebase responds with the UID of the created marker
+            json_data = json.loads(r.text)
+            marker_uid = json_data["name"]
+        else:
+            # UID of existing marker availabe -> update existing marker via PATCH
+            requests.patch(
+                url=self.url_patch(group, marker_uid),
+                json=data
+            )
+        return marker_uid
 
 
 class SphericalMercator(object):
