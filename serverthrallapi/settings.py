@@ -1,6 +1,8 @@
 import os
 import dj_database_url
 
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'DEVELOPMENT')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -9,10 +11,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_@#qy@r25)+ae#_=%87!b2ad1q)e-7+zd#9ty&!0n7%u=6lh)g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ENVIRONMENT == 'PRODUCTION'
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 INSTALLED_APPS = [
