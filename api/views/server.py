@@ -29,9 +29,9 @@ class ServerView(BaseAdminView):
 		if server is None:
 			return HttpResponse('server does not exist', status=404)
 
-		server = Server()
 		if 'name' in data:
 			server.name = data['name']
+
 		server.save()
 
 		serialized = ServerAdminSerializer(server).data
