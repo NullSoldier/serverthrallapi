@@ -34,6 +34,5 @@ class CharacterSerializer(serpy.Serializer):
 class ServerAdminSerializer(serpy.Serializer):
 	id             = serpy.Field()
 	name           = serpy.Field()
-	public_secret  = serpy.Field()
 	private_secret = serpy.Field()
 	last_sync      = DatetimeToUnixField()

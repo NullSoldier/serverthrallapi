@@ -7,9 +7,7 @@ from django.http import JsonResponse, HttpResponse
 class CharacterView(BasePublicView):
 
 	def get(self, request, server_id, character_id):
-		server = (Server.objects
-			.filter(id=server_id)
-			.first())
+		server = self.get_server(request, server_id)
 
 		if server is None:
 			return HttpResponse('server does not exist', status=400)

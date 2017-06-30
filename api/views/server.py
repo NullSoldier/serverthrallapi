@@ -11,9 +11,7 @@ class ServerView(BaseAdminView):
 
 		data = request.GET
 
-		server = (Server.objects
-			.filter(id=server_id, private_secret=data['private_secret'])
-			.first())
+		server = self.get_server(request, server_id)
 
 		if server is None:
 			return HttpResponse('server does not exist', status=404)
@@ -26,10 +24,7 @@ class ServerView(BaseAdminView):
 			return HttpResponse('missing required param private_secret')
 
 		data = request.GET
-
-		server = (Server.objects
-			.filter(id=server_id, private_secret=data['private_secret'])
-			.first())
+		server = self.get_server(request, server_id)
 
 		if server is None:
 			return HttpResponse('server does not exist', status=404)

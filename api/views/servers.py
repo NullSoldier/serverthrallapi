@@ -9,7 +9,6 @@ class ServersView(BasePublicView):
 
 	def post(self, request):
 		server = Server()
-		server.public_secret = uuid1()
 		server.private_secret = uuid1()
 		server.save()
 

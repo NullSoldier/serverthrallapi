@@ -8,12 +8,7 @@ from django.http import JsonResponse, HttpResponse
 class CharactersView(BasePublicView):
 
 	def get(self, request, server_id):
-		server = (Server.objects
-			.filter(id=server_id)
-			.filter(
-				Q(private_secret=request.GET.get('private_secret', None)) |
-				Q(public_secret=request.GET.get('public_secret', None)))
-			.first())
+		server = self.get_server(request, server_id)
 
 		if server is None:
 			return HttpResponse('server does not exist', status=400)
