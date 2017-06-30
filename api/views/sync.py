@@ -30,6 +30,8 @@ class SyncCharactersView(BaseAdminView):
 			return HttpResponse('server does not exist', status=404)
 
 		with transaction.atomic():
+			history_buffer = []
+
 			# Delete removed characters
 			synced_ids = [c['conan_id'] for c in data['characters']]
 
@@ -69,12 +71,15 @@ class SyncCharactersView(BaseAdminView):
 				character.save()
 
 				if is_different:
-					CharacterHistory.objects.create(
+					history_buffer.append(CharacterHistory(
 						character=character,
 						created=now,
 						x=character.x,
 						y=character.y,
-						z=character.z)
+						z=character.z))
+
+			# speed up history creation by creating in bulk
+			CharacterHistory.objects.bulk_create(history_buffer)
 
 		server.last_sync = now
 		server.save()
