@@ -40,13 +40,27 @@ class GinfoPlugin(object):
         return self.API_URL + '/games/' + self.GAME + '/groups/' + group + \
             '/maps/' + self.MAP + '/markers/' + marker + '/.json'
 
+    TRANSFORMATION_KX = 81.48592277749488
+    TRANSFORMATION_KY = -81.9610812970396
+    TRANSFORMATION_DX = 6275917.802625263
+    TRANSFORMATION_DY = 11160459.85122114
+
+    def linear_transform(self, x, y):
+        """
+            Applies a linear transform to the point x/y
+        """
+        return (
+            x * self.TRANSFORMATION_KX + self.TRANSFORMATION_DX,
+            y * self.TRANSFORMATION_KY + self.TRANSFORMATION_DY
+        )
+
     def convert_position(self, x, y):
         """
           Converts the given position from x/y to lat/lng coordinates
           @param x, y: x/y Position of in the game
           @return: lat/lng for the same position on the ginfo map
         """
-        # TODO: Apply correct linear transformation
+        (x, y) = self.linear_transform(x, y)
         return SphericalMercator.unproject(x, y)
 
     DEFAULT_MARKER_COLOR = "#1D8BF1"
@@ -57,7 +71,6 @@ class GinfoPlugin(object):
         """
           Posts the position of this character to Firebase
         """
-
         (lat, lng) = self.convert_position(
             float(character.x), float(character.y))
         data = {
@@ -79,7 +92,6 @@ class GinfoPlugin(object):
         }
 
         url = self.url_patch(group, '-KnjCenU4ja7Ms7LF1mA')
-        print(url)
         requests.patch(
             url=url,
             json=data
