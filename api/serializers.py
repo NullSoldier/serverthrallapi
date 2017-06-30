@@ -24,8 +24,17 @@ class CharacterSerializer(serpy.Serializer):
 	is_online      = serpy.Field()
 	steam_id       = serpy.Field()
 	conan_id       = serpy.Field()
+	created        = DatetimeToUnixField()
 	last_online    = DatetimeToUnixField()
 	last_killed_by = serpy.Field()
+	x              = serpy.Field()
+	y              = serpy.Field()
+	z              = serpy.Field()
+
+
+class CharacterHistorySerializer(serpy.Serializer):
+	character_id   = serpy.Field()
+	created        = DatetimeToUnixField()
 	x              = serpy.Field()
 	y              = serpy.Field()
 	z              = serpy.Field()
