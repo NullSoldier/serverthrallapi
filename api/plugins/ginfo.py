@@ -17,6 +17,7 @@ class GinfoPlugin(object):
     API_URL = 'https://ginfo-dev.firebaseio.com'
     GAME = 'conanexiles'
     MAP = 'conanexiles_desert'
+    GINFO_USER_UID = 'DaLvSI2e2LPirXork6kMp4NsQ7O2'
 
     def __init__(self):
         pass
@@ -86,8 +87,12 @@ class GinfoPlugin(object):
                 # This tells firebase to use its internal timestamp
                 ".sv": "timestamp"
             },
+            "createdAt": {
+                # This tells firebase to use its internal timestamp
+                ".sv": "timestamp"
+            },
             "color": self.DEFAULT_MARKER_COLOR,
-            "creatorId": "TODO",
+            "creatorId": self.GINFO_USER_UID,
             "position": {
                 "lat": lat,
                 "lng": lng
@@ -99,22 +104,27 @@ class GinfoPlugin(object):
 
         if (marker_uid == None or marker_uid == ""):
             # No marker uid available -> create a new marker via POST
-            data["createdAt"] = {".sv": "timestamp"}
             r = requests.post(
                 url = self.url_post(group),
                 json=data
             )
-            # TODO: Check Response for Errors?
             # Firebase responds with the UID of the created marker
             json_data = json.loads(r.text)
-            marker_uid = json_data["name"]
+            if "error" in json_data:
+                # TODO: Use proper logger
+                print "Error from Ginfo Firebase: " + json_data["error"]
+            else:
+                marker_uid = json_data["name"]
         else:
             # UID of existing marker availabe -> update existing marker via PATCH
             r = requests.patch(
                 url=self.url_patch(group, marker_uid),
                 json=data
             )
-            # TODO: Check Response for Errors?
+            json_data = json.loads(r.text)
+            if "error" in json_data:
+                # TODO: Use proper logger
+                print "Error from Ginfo Firebase: " + json_data["error"]
         return marker_uid
 
 

@@ -76,7 +76,6 @@ class SyncCharactersView(BaseAdminView):
 						character.ginfo_marker_uid = marker_uid
 				character.save()
 
-
 				if is_different:
 					history_buffer.append(CharacterHistory(
 						character=character,
@@ -84,8 +83,6 @@ class SyncCharactersView(BaseAdminView):
 						x=character.x,
 						y=character.y,
 						z=character.z))
-					if 'ginfo_group_uid' in request.GET:
-						self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'])
 
 			# speed up history creation by creating in bulk
 			CharacterHistory.objects.bulk_create(history_buffer)
