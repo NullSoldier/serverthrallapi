@@ -14,4 +14,3 @@ class Character(models.Model):
 	x                 = models.FloatField()
 	y                 = models.FloatField()
 	z                 = models.FloatField()
-	ginfo_marker_uid  = models.TextField(blank=True)

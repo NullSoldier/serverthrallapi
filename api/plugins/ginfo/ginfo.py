@@ -3,10 +3,12 @@
   Integration into the Ginfo Map via Firebase REST API
 """
 from django.http import HttpResponse, HttpRequest
+from django.db.models import Q
 import requests
 import math
 import json
 from api.models import Character
+from ginfocharacter import GInfoCharacter
 from datetime import datetime
 
 
@@ -68,17 +70,17 @@ class GinfoPlugin(object):
     DEFAULT_MARKER_TYPE = 1
     DEFAULT_MARKER_SKIN = 0
 
-    def update_position(self, character, group, access_token, marker_uid = None):
+    def update_position(self, character, group, access_token):
         """
           Posts the position of this character to Firebase
           @param character:
                     The character for which the position should be updated
           @param group:
                     The group in which the marker should be postet
-          @param marker_uid:
-                    Firebase-UID of an existing marker to update (if available).
-                    If not available, a new marker will be created
+          @param access_token:
+                    Access token for the ginfo group
         """
+
         (lat, lng) = self.convert_position(
             float(character.x), float(character.y))
         data = {
@@ -102,7 +104,11 @@ class GinfoPlugin(object):
             "accessToken": access_token
         }
 
-        if (marker_uid == None or marker_uid == ""):
+        ginfo_character = (GInfoCharacter.objects
+				.filter(character_id=character.id)
+                .first())
+
+        if ginfo_character is None:
             # No marker uid available -> create a new marker via POST
             r = requests.post(
                 url = self.url_post(group),
@@ -114,18 +120,21 @@ class GinfoPlugin(object):
                 # TODO: Use proper logger
                 print "Error from Ginfo Firebase: " + json_data["error"]
             else:
-                marker_uid = json_data["name"]
+                print(json_data)
+                ginfo_character = GInfoCharacter()
+                ginfo_character.character_id = character.id
+                ginfo_character.ginfo_marker_uid = json_data["name"]
+                ginfo_character.save()
         else:
             # UID of existing marker availabe -> update existing marker via PATCH
             r = requests.patch(
-                url=self.url_patch(group, marker_uid),
+                url=self.url_patch(group, ginfo_character.ginfo_marker_uid),
                 json=data
             )
             json_data = json.loads(r.text)
             if "error" in json_data:
                 # TODO: Use proper logger
                 print "Error from Ginfo Firebase: " + json_data["error"]
-        return marker_uid
 
 
 class SphericalMercator(object):
