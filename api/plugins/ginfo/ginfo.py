@@ -6,7 +6,6 @@ from django.http import HttpResponse, HttpRequest
 from django.db.models import Q
 import requests
 import math
-import json
 from api.models import Character
 from ginfocharacter import GInfoCharacter
 from datetime import datetime
@@ -105,8 +104,8 @@ class GinfoPlugin(object):
         }
 
         ginfo_character = (GInfoCharacter.objects
-				.filter(character_id=character.id)
-                .first())
+            .filter(character_id=character.id)
+            .first())
 
         if ginfo_character is None:
             # No marker uid available -> create a new marker via POST
@@ -115,12 +114,11 @@ class GinfoPlugin(object):
                 json=data
             )
             # Firebase responds with the UID of the created marker
-            json_data = json.loads(r.text)
+            json_data = r.json()
             if "error" in json_data:
                 # TODO: Use proper logger
                 print "Error from Ginfo Firebase: " + json_data["error"]
             else:
-                print(json_data)
                 ginfo_character = GInfoCharacter()
                 ginfo_character.character_id = character.id
                 ginfo_character.ginfo_marker_uid = json_data["name"]
@@ -131,7 +129,7 @@ class GinfoPlugin(object):
                 url=self.url_patch(group, ginfo_character.ginfo_marker_uid),
                 json=data
             )
-            json_data = json.loads(r.text)
+            json_data = r.json()
             if "error" in json_data:
                 # TODO: Use proper logger
                 print "Error from Ginfo Firebase: " + json_data["error"]
