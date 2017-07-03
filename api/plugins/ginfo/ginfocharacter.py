@@ -2,7 +2,7 @@ from django.db import models
 from api.models import Character
 
 
-class GInfoCharacter(models.Model):
+class GinfoCharacter(models.Model):
     character = models.ForeignKey(
         Character,
         related_name="ginfo_character",

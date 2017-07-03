@@ -7,8 +7,9 @@ from django.db.models import Q
 import requests
 import math
 from api.models import Character
-from ginfocharacter import GInfoCharacter
+from ginfocharacter import GinfoCharacter
 from datetime import datetime
+from firebase_pushid import PushID
 
 
 class GinfoPlugin(object):
@@ -21,26 +22,25 @@ class GinfoPlugin(object):
     GINFO_USER_UID = 'DaLvSI2e2LPirXork6kMp4NsQ7O2'
 
     def __init__(self):
-        pass
+        self.uid_generator = PushID()
 
-    def url_post(self, group):
+    def marker_path(self, group, marker):
         """
-          Returns the url for posting a marker for the given group
+            Returns the path to which a marker has to be posted in the firebase database
 
-          @param group: UID of the ginfo group for which the marker should be created
+            @param group: UID of the ginfo group for which the marker should be posted
+            @param marker: UID of the marker that should be posted
         """
-        return self.API_URL + '/games/' + self.GAME + '/groups/' + \
-            group + '/maps/' + self.MAP + '/markers.json'
+        return "games/" + self.GAME + "/groups/" + group + "/maps/" + self.MAP + '/markers/' + marker
 
-    def url_patch(self, group, marker):
+    def access_token_path(self, group, marker):
         """
-          Returns the url for patching an existing marker for the given group
+            Returns the path to which the groups access token has to be posted in the firebase database
 
-          @param group: UID of the ginfo group for which the marker was created
-          @param marker: UID of the existing ginfo marker that should be updated
+            @param group: UID of the ginfo group for which the marker should be posted
+            @param marker: UID of the marker that should be posted
         """
-        return self.API_URL + '/games/' + self.GAME + '/groups/' + group + \
-            '/maps/' + self.MAP + '/markers/' + marker + '/.json'
+        return "groupAccessTokenVerifier/" + group + "/" + marker
 
     TRANSFORMATION_KX = 81.48592277749488
     TRANSFORMATION_KY = -81.9610812970396
@@ -79,60 +79,46 @@ class GinfoPlugin(object):
           @param access_token:
                     Access token for the ginfo group
         """
-
         (lat, lng) = self.convert_position(
             float(character.x), float(character.y))
+
+        ginfo_character, created = GinfoCharacter.objects.get_or_create(
+            character_id=character.id)
+        if created:
+            ginfo_character.ginfo_marker_uid = self.uid_generator.next_id()
+            ginfo_character.save()
+
         data = {
-            "name": character.name,
-            "updatedAt": {
-                # This tells firebase to use its internal timestamp
-                ".sv": "timestamp"
+            self.marker_path(group, ginfo_character.ginfo_marker_uid): {
+                "name": character.name,
+                "updatedAt": {
+                    # This tells firebase to use its internal timestamp
+                    ".sv": "timestamp"
+                },
+                "createdAt": {
+                    # This tells firebase to use its internal timestamp
+                    ".sv": "timestamp"
+                },
+                "color": self.DEFAULT_MARKER_COLOR,
+                "creatorId": self.GINFO_USER_UID,
+                "position": {
+                    "lat": lat,
+                    "lng": lng
+                },
+                "type": self.DEFAULT_MARKER_TYPE,
+                "skin": self.DEFAULT_MARKER_SKIN,
             },
-            "createdAt": {
-                # This tells firebase to use its internal timestamp
-                ".sv": "timestamp"
-            },
-            "color": self.DEFAULT_MARKER_COLOR,
-            "creatorId": self.GINFO_USER_UID,
-            "position": {
-                "lat": lat,
-                "lng": lng
-            },
-            "type": self.DEFAULT_MARKER_TYPE,
-            "skin": self.DEFAULT_MARKER_SKIN,
-            "accessToken": access_token
+            self.access_token_path(group, ginfo_character.ginfo_marker_uid): access_token
         }
 
-        ginfo_character = (GInfoCharacter.objects
-            .filter(character_id=character.id)
-            .first())
-
-        if ginfo_character is None:
-            # No marker uid available -> create a new marker via POST
-            r = requests.post(
-                url = self.url_post(group),
-                json=data
-            )
-            # Firebase responds with the UID of the created marker
-            json_data = r.json()
-            if "error" in json_data:
-                # TODO: Use proper logger
-                print "Error from Ginfo Firebase: " + json_data["error"]
-            else:
-                ginfo_character = GInfoCharacter()
-                ginfo_character.character_id = character.id
-                ginfo_character.ginfo_marker_uid = json_data["name"]
-                ginfo_character.save()
-        else:
-            # UID of existing marker availabe -> update existing marker via PATCH
-            r = requests.patch(
-                url=self.url_patch(group, ginfo_character.ginfo_marker_uid),
-                json=data
-            )
-            json_data = r.json()
-            if "error" in json_data:
-                # TODO: Use proper logger
-                print "Error from Ginfo Firebase: " + json_data["error"]
+        response = requests.patch(
+            url=self.API_URL + '/.json',
+            json=data
+        )
+        json_data = response.json()
+        if "error" in json_data:
+            # TODO: Use proper logger
+            print "Error from Ginfo Firebase: " + json_data["error"]
 
 
 class SphericalMercator(object):
