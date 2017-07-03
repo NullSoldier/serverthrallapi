@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 import json
 import pytz
-from api.plugins import GinfoPlugin
+from api.plugins.ginfo import GinfoPlugin
 
 class SyncCharactersView(BaseAdminView):
 	ginfoPlugin = GinfoPlugin()
