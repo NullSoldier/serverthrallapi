@@ -16,10 +16,10 @@ class GinfoPlugin(object):
     """
       GinfoPlugin provides methods to post a position to the ginfo firebase database
     """
-    API_URL = 'https://ginfo-dev.firebaseio.com'
+    API_URL = 'https://ginfo-34baa.firebaseio.com'
     GAME = 'conanexiles'
     MAP = 'conanexiles_desert'
-    GINFO_USER_UID = 'DaLvSI2e2LPirXork6kMp4NsQ7O2'
+    GINFO_USER_UID = 'y67Efa3kddSuhb26UoUapIJakMh1'
 
     def __init__(self):
         self.uid_generator = PushID()
