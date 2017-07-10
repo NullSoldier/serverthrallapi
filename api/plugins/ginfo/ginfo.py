@@ -115,10 +115,13 @@ class GinfoPlugin(object):
             url=self.API_URL + '/.json',
             json=data
         )
-        json_data = response.json()
-        if "error" in json_data:
-            # TODO: Use proper logger
-            print "Error from Ginfo Firebase: " + json_data["error"]
+        try:
+            json_data = response.json()
+            if "error" in json_data:
+                # TODO: Use proper logger
+                print "Error from Ginfo Firebase: " + json_data["error"]
+        except:
+            pass
 
 
 class SphericalMercator(object):
