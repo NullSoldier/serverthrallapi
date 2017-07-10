@@ -7,9 +7,10 @@ from django.http import HttpResponse
 from django.utils import timezone
 import json
 import pytz
-
+from api.plugins.ginfo import GinfoPlugin
 
 class SyncCharactersView(BaseAdminView):
+	ginfoPlugin = GinfoPlugin()
 
 	def post(self, request, server_id):
 		now = timezone.now()
@@ -70,6 +71,7 @@ class SyncCharactersView(BaseAdminView):
 				character.last_online    = last_online
 				character.save()
 
+
 				if is_different:
 					history_buffer.append(CharacterHistory(
 						character=character,
@@ -77,6 +79,12 @@ class SyncCharactersView(BaseAdminView):
 						x=character.x,
 						y=character.y,
 						z=character.z))
+					if 'ginfo_group_uid' in request.GET and 'ginfo_access_token' in request.GET:
+						try:
+							self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'], request.GET['ginfo_access_token'])
+						except:
+							# TODO: Error Loggin / NewRelic?
+							pass
 
 			# speed up history creation by creating in bulk
 			CharacterHistory.objects.bulk_create(history_buffer)
@@ -85,7 +93,8 @@ class SyncCharactersView(BaseAdminView):
 		history_threshold = timezone.now() - timedelta(days=5)
 		CharacterHistory.objects.filter(created__lt=history_threshold).delete()
 
+
+
 		server.last_sync = now
 		server.save()
-
 		return HttpResponse(status=200)

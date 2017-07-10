@@ -5,3 +5,4 @@ gunicorn==19.6.0
 psycopg2==2.6.2
 pytz==2017.2
 serpy==0.1.1
+requests==2.18.1
