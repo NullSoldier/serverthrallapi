@@ -31,7 +31,7 @@ class GinfoPlugin(object):
             @param group: UID of the ginfo group for which the marker should be posted
             @param marker: UID of the marker that should be posted
         """
-        return "games/" + self.GAME + "/groups/" + group + "/maps/" + self.MAP + '/markers/' + marker
+        return 'games/%s/groups/%s/maps/%s/markers/%s' % (self.GAME, group, self.MAP, marker)
 
     def access_token_path(self, group, marker):
         """
@@ -40,7 +40,7 @@ class GinfoPlugin(object):
             @param group: UID of the ginfo group for which the marker should be posted
             @param marker: UID of the marker that should be posted
         """
-        return "groupAccessTokenVerifier/" + group + "/" + marker
+        return 'groupAccessTokenVerifier/%s/%s' % (group, marker)
 
     TRANSFORMATION_KX = 81.48592277749488
     TRANSFORMATION_KY = -81.9610812970396
