@@ -1,4 +1,7 @@
+# This is taken from
 # https://gist.github.com/risent/4cab3878d995bec7d1c2
+# which is a Python port of the official JS code by Firebase
+# https://gist.github.com/mikelehen/3596a30bd69384624c11
 import random
 import time
 from exceptions import ValueError
