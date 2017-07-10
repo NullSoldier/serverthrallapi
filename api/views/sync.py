@@ -71,8 +71,6 @@ class SyncCharactersView(BaseAdminView):
 				character.last_online    = last_online
 				character.save()
 
-				if 'ginfo_group_uid' in request.GET and 'ginfo_access_token' in request.GET:
-					self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'], request.GET['ginfo_access_token'])
 
 				if is_different:
 					history_buffer.append(CharacterHistory(
@@ -81,6 +79,12 @@ class SyncCharactersView(BaseAdminView):
 						x=character.x,
 						y=character.y,
 						z=character.z))
+					if 'ginfo_group_uid' in request.GET and 'ginfo_access_token' in request.GET:
+						try:
+							self.ginfoPlugin.update_position(character, request.GET['ginfo_group_uid'], request.GET['ginfo_access_token'])
+						except:
+							# TODO: Error Loggin / NewRelic?
+							pass
 
 			# speed up history creation by creating in bulk
 			CharacterHistory.objects.bulk_create(history_buffer)
