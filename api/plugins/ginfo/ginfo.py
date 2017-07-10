@@ -19,7 +19,7 @@ class GinfoPlugin(object):
     API_URL = 'https://ginfo-34baa.firebaseio.com'
     GAME = 'conanexiles'
     MAP = 'conanexiles_desert'
-    GINFO_USER_UID = 'y67Efa3kddSuhb26UoUapIJakMh1'
+    SERVERTHRALL_USER_UID = 'y67Efa3kddSuhb26UoUapIJakMh1'
 
     def __init__(self):
         self.uid_generator = PushID()
@@ -100,7 +100,7 @@ class GinfoPlugin(object):
                     ".sv": "timestamp"
                 },
                 "color": self.DEFAULT_MARKER_COLOR,
-                "creatorId": self.GINFO_USER_UID,
+                "creatorId": self.SERVERTHRALL_USER_UID,
                 "position": {
                     "lat": lat,
                     "lng": lng
