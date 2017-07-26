@@ -1,5 +1,5 @@
 from .base import BaseAdminView
-from api.models import Character, Server, CharacterHistory
+from api.models import Character, Server, CharacterHistory, Clan
 from datetime import datetime, timedelta
 from django.db import transaction
 from django.db.models import Q
@@ -34,12 +34,34 @@ class SyncCharactersView(BaseAdminView):
             history_buffer = []
 
             # Delete removed characters
-            synced_ids = [c['conan_id'] for c in data['characters']]
+            sent_character_ids = [c['conan_id'] for c in data['characters']]
+            sent_clan_ids = [c['id'] for c in data['clans']]
 
             (Character.objects
                 .filter(server=server)
-                .filter(~Q(conan_id__in=synced_ids))
+                .filter(~Q(conan_id__in=sent_character_ids))
                 .delete())
+
+            (Clan.objects
+                .filter(server=server)
+                .filter(~Q(conan_id__in=sent_clan_ids))
+                .delete())
+
+            print sent_character_ids, sent_clan_ids
+
+            for sync_data in data['clans']:
+                clan = (Clan.objects
+                    .filter(conan_id=sync_data['id'])
+                    .first())
+
+                if clan is None:
+                    clan = Clan()
+
+                clan.server = server
+                clan.name = sync_data['name']
+                clan.motd = sync_data['motd']
+                clan.owner_id = sync_data['owner_id']
+                clan.save()
 
             for sync_data in data['characters']:
                 character = (Character.objects
