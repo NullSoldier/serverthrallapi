@@ -1,9 +1,11 @@
 # flake8: noqa
 from __future__ import unicode_literals
-from django.db import migrations
-from datetime import datetime
-from django.utils import timezone
+
 import uuid
+from datetime import datetime
+
+from django.db import migrations
+from django.utils import timezone
 
 
 def add_data(apps, schema_editor):

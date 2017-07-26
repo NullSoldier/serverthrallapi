@@ -1,5 +1,6 @@
-import serpy
 import calendar
+
+import serpy
 
 
 class EnumField(serpy.Field):

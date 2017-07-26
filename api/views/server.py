@@ -1,6 +1,8 @@
-from .base import BaseAdminView
+from django.http import HttpResponse, JsonResponse
+
 from api.serializers import ServerAdminSerializer
-from django.http import JsonResponse, HttpResponse
+
+from .base import BaseAdminView
 
 
 class ServerView(BaseAdminView):

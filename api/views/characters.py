@@ -1,7 +1,9 @@
-from .base import BasePublicView
+from django.http import HttpResponse, JsonResponse
+
 from api.models import Character
 from api.serializers import CharacterSerializer
-from django.http import JsonResponse, HttpResponse
+
+from .base import BasePublicView
 
 
 class CharactersView(BasePublicView):

@@ -1,8 +1,11 @@
-from .base import BasePublicView
+from uuid import uuid1
+
+from django.http import JsonResponse
+
 from api.models import Server
 from api.serializers import ServerAdminSerializer
-from django.http import JsonResponse
-from uuid import uuid1
+
+from .base import BasePublicView
 
 
 class ServersView(BasePublicView):

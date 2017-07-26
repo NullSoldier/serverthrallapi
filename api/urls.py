@@ -1,5 +1,8 @@
 from django.conf.urls import url
-from .views import CharactersView, CharacterView, ServersView, ServerView, SyncCharactersView, CharacterHistoryView, ClanView, ClansView
+
+from .views import (CharacterHistoryView, CharactersView, CharacterView,
+                    ClansView, ClanView, ServersView, ServerView,
+                    SyncCharactersView)
 
 urlpatterns = [
     url(r'^$', ServersView.as_view()),

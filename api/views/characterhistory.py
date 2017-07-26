@@ -1,7 +1,9 @@
-from .base import BasePublicView
+from django.http import HttpResponse, JsonResponse
+
 from api.models import Character, CharacterHistory
 from api.serializers import CharacterHistorySerializer
-from django.http import JsonResponse, HttpResponse
+
+from .base import BasePublicView
 
 
 class CharacterHistoryView(BasePublicView):

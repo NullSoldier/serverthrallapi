@@ -1,7 +1,9 @@
-import requests
 import math
-from ginfocharacter import GinfoCharacter
+
+import requests
+
 from firebase_pushid import PushID
+from ginfocharacter import GinfoCharacter
 
 
 class GinfoPlugin(object):
