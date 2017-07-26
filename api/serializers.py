@@ -16,6 +16,16 @@ class DatetimeToUnixField(serpy.Field):
         return calendar.timegm(v.utctimetuple())
 
 
+class ClanSerializer(serpy.Serializer):
+    id        = serpy.Field()
+    server_id = serpy.Field()
+    name      = serpy.Field()
+    motd      = serpy.Field()
+    owner_id  = serpy.Field()
+    conan_id  = serpy.Field()
+    created   = DatetimeToUnixField()
+
+
 class CharacterSerializer(serpy.Serializer):
 	id             = serpy.Field()
 	server_id      = serpy.Field()
