@@ -47,8 +47,6 @@ class SyncCharactersView(BaseAdminView):
                 .filter(~Q(conan_id__in=sent_clan_ids))
                 .delete())
 
-            print sent_character_ids, sent_clan_ids
-
             for sync_data in data['clans']:
                 clan = (Clan.objects
                     .filter(conan_id=sync_data['id'])
@@ -113,8 +111,6 @@ class SyncCharactersView(BaseAdminView):
         # Delete history older than 5 days
         history_threshold = timezone.now() - timedelta(days=5)
         CharacterHistory.objects.filter(created__lt=history_threshold).delete()
-
-
 
         server.last_sync = now
         server.save()

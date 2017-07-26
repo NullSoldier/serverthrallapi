@@ -1,14 +1,6 @@
-
-"""
-  Integration into the Ginfo Map via Firebase REST API
-"""
-from django.http import HttpResponse, HttpRequest
-from django.db.models import Q
 import requests
 import math
-from api.models import Character
 from ginfocharacter import GinfoCharacter
-from datetime import datetime
 from firebase_pushid import PushID
 
 

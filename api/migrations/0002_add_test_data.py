@@ -1,3 +1,4 @@
+# flake8: noqa
 from __future__ import unicode_literals
 from django.db import migrations
 from datetime import datetime

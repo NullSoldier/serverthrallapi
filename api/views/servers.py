@@ -7,10 +7,10 @@ from uuid import uuid1
 
 class ServersView(BasePublicView):
 
-	def post(self, request):
-		server = Server()
-		server.private_secret = uuid1()
-		server.save()
+    def post(self, request):
+        server = Server()
+        server.private_secret = uuid1()
+        server.save()
 
-		serialized = ServerAdminSerializer(server).data
-		return JsonResponse(serialized, status=200)
+        serialized = ServerAdminSerializer(server).data
+        return JsonResponse(serialized, status=200)

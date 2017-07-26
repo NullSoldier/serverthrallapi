@@ -1,11 +1,12 @@
 from .base import BasePublicView
+from api.models import Clan
 from api.serializers import ClanSerializer
 from django.http import JsonResponse, HttpResponse
 
 
 class ClanView(BasePublicView):
 
-    def get(self, request, _id, clan_id):
+    def get(self, request, server_id, clan_id):
         server = self.get_server(request, server_id)
 
         if server is None:
@@ -14,7 +15,7 @@ class ClanView(BasePublicView):
         clan = (Clan.objects
             .filter(
                 server_id=server.id,
-                id = clan_id)
+                id=clan_id)
             .first())
 
         if clan is None:

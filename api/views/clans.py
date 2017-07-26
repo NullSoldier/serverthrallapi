@@ -1,7 +1,6 @@
 from .base import BasePublicView
-from api.models import Clan, Server
+from api.models import Clan
 from api.serializers import ClanSerializer
-from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 
 
