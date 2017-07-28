@@ -1,1 +1,2 @@
-web: chmod +x manage.py && ./manage.py migrate && gunicorn serverthrallapi.wsgi --log-file -
+web: chmod +x startprocess.sh && ./startprocess.sh
+worker: chmod +x startworker.sh && ./startworker.sh
