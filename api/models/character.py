@@ -14,3 +14,12 @@ class Character(models.Model):
     x                 = models.FloatField()
     y                 = models.FloatField()
     z                 = models.FloatField()
+
+    def generate_history(self, created):
+        from .characterhistory import CharacterHistory
+        CharacterHistory(
+            character=self,
+            created=created,
+            x=self.x,
+            y=self.y,
+            z=self.z)

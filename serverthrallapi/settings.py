@@ -1,12 +1,11 @@
 import os
-
+import json
 import dj_database_url
 
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'DEVELOPMENT')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '_@#qy@r25)+ae#_=%87!b2ad1q)e-7+zd#9ty&!0n7%u=6lh)g'
@@ -23,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django_celery_beat',
     'corsheaders',
     'api'
 ]
@@ -81,7 +81,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = 'en-us'
@@ -89,3 +88,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# Celery
+CELERY_TASK_ALWAYS_EAGER = DEBUG
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = os.environ.get('RABBITMQ_BIGWIG_URL')
