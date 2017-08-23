@@ -54,6 +54,7 @@ def sync_characters(server_id, data, params):
 
         for sync_data in data:
             character = (Character.objects
+                .filter(server=server)
                 .filter(conan_id=sync_data['conan_id'])
                 .first())
 
