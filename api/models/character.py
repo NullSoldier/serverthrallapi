@@ -17,7 +17,7 @@ class Character(models.Model):
 
     def generate_history(self, created):
         from .characterhistory import CharacterHistory
-        CharacterHistory(
+        return CharacterHistory(
             character=self,
             created=created,
             x=self.x,
