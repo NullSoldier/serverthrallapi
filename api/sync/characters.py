@@ -3,6 +3,7 @@ from datetime import datetime
 import pytz
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
 
 from api.models import Character, CharacterHistory, Server
 
@@ -41,6 +42,8 @@ def sync_characters(server_id, data, params):
     if server is None:
         return
 
+    now = timezone.now()
+
     with transaction.atomic():
         history_buffer = []
         changed_ids = []
@@ -61,11 +64,11 @@ def sync_characters(server_id, data, params):
             if character is None:
                 character = Character()
 
-            changed = _sync_character(server, character, data)
+            changed = _sync_character(server, character, sync_data)
 
             if changed:
                 changed_ids.append(character.id)
-                history_buffer.append(character.generate_history())
+                history_buffer.append(character.generate_history(now))
 
         has_ginfo = (
             'ginfo_group_uid' in params and
