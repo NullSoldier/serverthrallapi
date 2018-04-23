@@ -9,7 +9,7 @@ from api.models import Character, CharacterHistory, Server
 
 
 def _sync_character(server, character, data):
-    has_no_changes = (
+    has_moved = (
         (data['x'] == character.x) or
         (data['y'] == character.y) or
         (data['z'] == character.y))
@@ -25,13 +25,14 @@ def _sync_character(server, character, data):
     character.is_online      = data['is_online']
     character.steam_id       = data['steam_id']
     character.last_killed_by = data['last_killed_by']
+    character.conan_clan_id  = data['clan_id']
     character.x              = data['x']
     character.y              = data['y']
     character.z              = data['z']
     character.last_online    = last_online
     character.save()
 
-    return not has_no_changes
+    return not has_moved
 
 
 def sync_characters(server_id, data, params):

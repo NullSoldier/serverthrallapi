@@ -13,8 +13,9 @@ def sync_clans(server_id, data):
         return
 
     with transaction.atomic():
-        # Delete removed characters
+        # Delete removed clans
         sent_ids = [c['id'] for c in data]
+
         (Clan.objects
             .filter(server=server)
             .filter(~Q(conan_id__in=sent_ids))
@@ -29,6 +30,7 @@ def sync_clans(server_id, data):
                 clan = Clan()
 
             clan.server = server
+            clan.conan_id = sync_data['id']
             clan.name = sync_data['name']
             clan.motd = sync_data['motd']
             clan.owner_id = sync_data['owner_id']

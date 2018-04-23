@@ -3,13 +3,13 @@ from django.http import HttpResponse, JsonResponse
 from api.models import Character
 from api.serializers import CharacterSerializer
 
-from .base import BasePublicView
+from .base import BaseView
 
 
-class CharacterView(BasePublicView):
+class CharacterView(BaseView):
 
     def get(self, request, server_id, character_id):
-        server = self.get_server(request, server_id)
+        server = self.get_server_public(request, server_id)
 
         if server is None:
             return HttpResponse('server does not exist', status=400)
@@ -18,6 +18,7 @@ class CharacterView(BasePublicView):
             .filter(
                 server_id=server.id,
                 id=character_id)
+            .with_clan_name()
             .first())
 
         if character is None:

@@ -33,8 +33,10 @@ class CharacterSerializer(serpy.Serializer):
     name           = serpy.Field()
     level          = serpy.Field()
     is_online      = serpy.Field()
+    clan_name      = serpy.Field()
     steam_id       = serpy.Field()
     conan_id       = serpy.Field()
+    conan_clan_id  = serpy.Field()
     created        = DatetimeToUnixField()
     last_online    = DatetimeToUnixField()
     last_killed_by = serpy.Field()
@@ -54,5 +56,13 @@ class CharacterHistorySerializer(serpy.Serializer):
 class ServerAdminSerializer(serpy.Serializer):
     id             = serpy.Field()
     name           = serpy.Field()
+    character_count = serpy.Field()
     private_secret = serpy.Field()
     last_sync      = DatetimeToUnixField()
+
+
+class ServerSerializer(serpy.Serializer):
+    id              = serpy.Field()
+    name            = serpy.Field()
+    character_count = serpy.Field()
+    last_sync       = DatetimeToUnixField()

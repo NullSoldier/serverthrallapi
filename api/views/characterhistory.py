@@ -3,13 +3,13 @@ from django.http import HttpResponse, JsonResponse
 from api.models import Character, CharacterHistory
 from api.serializers import CharacterHistorySerializer
 
-from .base import BasePublicView
+from .base import BaseView
 
 
-class CharacterHistoryView(BasePublicView):
+class CharacterHistoryView(BaseView):
 
     def get(self, request, server_id, character_id):
-        server = self.get_server(request, server_id)
+        server = self.get_server_public(request, server_id)
 
         if server is None:
             return HttpResponse('server does not exist', status=400)
