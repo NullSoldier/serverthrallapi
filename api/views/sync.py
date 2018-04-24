@@ -22,7 +22,8 @@ class SyncCharactersView(BaseView):
         data = json.loads(request.body)
 
         if 'server' in data:
-            server.name = data['server']['name']
+            server.name = data['server'].get('name', '')
+            server.ip_address = data['server'].get('ip_address', '')
 
         if 'characters' in data:
             sync_characters_task.delay(server.id, data['characters'], request.GET)

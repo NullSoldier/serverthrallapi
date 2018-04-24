@@ -54,15 +54,17 @@ class CharacterHistorySerializer(serpy.Serializer):
 
 
 class ServerAdminSerializer(serpy.Serializer):
-    id             = serpy.Field()
-    name           = serpy.Field()
+    id              = serpy.Field()
+    name            = serpy.Field()
     character_count = serpy.Field()
-    private_secret = serpy.Field()
-    last_sync      = DatetimeToUnixField()
+    private_secret  = serpy.Field()
+    ip_address      = serpy.Field()
+    last_sync       = DatetimeToUnixField()
 
 
 class ServerSerializer(serpy.Serializer):
     id              = serpy.Field()
     name            = serpy.Field()
     character_count = serpy.Field()
+    ip_address      = serpy.Field()
     last_sync       = DatetimeToUnixField()
