@@ -16,6 +16,8 @@ class ClansView(BaseView):
 
         clans = (Clan.objects
             .filter(server_id=server.id)
+            .with_owner_name()
+            .with_character_count()
             .all())
 
         serialized = ClanSerializer(clans, many=True).data

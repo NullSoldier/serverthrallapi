@@ -18,13 +18,15 @@ class DatetimeToUnixField(serpy.Field):
 
 
 class ClanSerializer(serpy.Serializer):
-    id        = serpy.Field()
-    server_id = serpy.Field()
-    name      = serpy.Field()
-    motd      = serpy.Field()
-    owner_id  = serpy.Field()
-    conan_id  = serpy.Field()
-    created   = DatetimeToUnixField()
+    id              = serpy.Field()
+    server_id       = serpy.Field()
+    name            = serpy.Field()
+    motd            = serpy.Field()
+    conan_id        = serpy.Field()
+    owner_id        = serpy.Field()
+    owner_name      = serpy.Field()
+    character_count = serpy.Field()
+    created         = DatetimeToUnixField()
 
 
 class CharacterSerializer(serpy.Serializer):

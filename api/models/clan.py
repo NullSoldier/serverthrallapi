@@ -1,4 +1,5 @@
 from django.db import models
+from .clanmanager import ClanManager
 
 
 class Clan(models.Model):
@@ -8,3 +9,5 @@ class Clan(models.Model):
     motd     = models.TextField()
     created  = models.DateTimeField(auto_now_add=True)
     server   = models.ForeignKey('api.Server')
+
+    objects = ClanManager.as_manager()
