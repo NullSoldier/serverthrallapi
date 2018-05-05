@@ -4,6 +4,7 @@ import pytz
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
+from django.conf import settings
 
 from api.models import Character, CharacterHistory, Server
 
@@ -81,4 +82,5 @@ def sync_characters(server_id, data, params):
                 params['ginfo_group_uid'],
                 params['ginfo_access_token'])
 
-        CharacterHistory.objects.bulk_create(history_buffer)
+        if settings.ST_ENABLE_HISTORY:
+            CharacterHistory.objects.bulk_create(history_buffer)
