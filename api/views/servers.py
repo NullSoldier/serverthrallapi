@@ -11,7 +11,7 @@ from .base import BaseView
 class ServersView(BaseView):
 
     def get(self, request):
-        servers = self.get_servers()
+        servers = self.get_servers().only_active()
         serialized = ServerSerializer(servers, many=True).data
         return JsonResponse({'items': serialized})
 
