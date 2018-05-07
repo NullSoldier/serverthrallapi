@@ -11,15 +11,15 @@ from .base import BaseView
 class ServersView(BaseView):
 
     def get(self, request):
-        servers = Server.objects.only_active().with_character_count()
+        servers = self.get_servers()
         serialized = ServerSerializer(servers, many=True).data
         return JsonResponse({'items': serialized})
 
     def post(self, request):
         server = Server()
         server.private_secret = uuid1()
-        server.character_count = 0
         server.save()
 
+        server = self.get_server_public(request, server.id)
         serialized = ServerAdminSerializer(server).data
         return JsonResponse(serialized, status=200)

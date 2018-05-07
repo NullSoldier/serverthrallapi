@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Count
+from django.db.models import Count, Q
 
 
 class ServerManager(models.QuerySet):
@@ -15,3 +15,6 @@ class ServerManager(models.QuerySet):
 
     def with_character_count(self):
         return self.annotate(character_count=Count('characters'))
+
+    def with_online_count(self):
+        return self.annotate(online_count=Count('characters', filter=Q(characters__is_online=True)))

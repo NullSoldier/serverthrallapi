@@ -16,7 +16,7 @@ class ClansView(BaseView):
 
         clans = (Clan.objects
             .filter(server_id=server.id)
-            .with_owner_name()
+            .select_related('owner')
             .with_character_count()
             .all())
 

@@ -18,7 +18,7 @@ class CharacterView(BaseView):
             .filter(
                 server_id=server.id,
                 id=character_id)
-            .with_clan_name()
+            .select_related('clan')
             .first())
 
         if character is None:

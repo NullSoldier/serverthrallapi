@@ -12,6 +12,7 @@ class Character(models.Model):
     last_online    = models.DateTimeField(null=True)
     last_killed_by = models.TextField(null=True)
     created        = models.DateTimeField(auto_now_add=True)
+    clan           = models.ForeignKey('api.Clan', related_name='members', null=True)
     server         = models.ForeignKey('api.Server', related_name='characters')
     x              = models.FloatField()
     y              = models.FloatField()
