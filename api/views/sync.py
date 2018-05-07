@@ -1,9 +1,7 @@
-import json
-
 from django.http import HttpResponse
-from django.utils import timezone
 
-from api.tasks import delete_old_history, sync_characters_task, sync_clans_task
+from api.tasks import sync_server_data_task
+from api.models import ServerSyncData
 
 from .base import BaseView
 
@@ -19,20 +17,9 @@ class SyncCharactersView(BaseView):
         if server is None:
             return HttpResponse('server does not exist', status=404)
 
-        data = json.loads(request.body)
+        sync_data = ServerSyncData(data=request.body)
+        sync_data.save()
 
-        if 'server' in data:
-            server.name = data['server'].get('name', '')
-            server.ip_address = data['server'].get('ip_address', '')
+        sync_server_data_task.delay(sync_data.id, request.get)
 
-        if 'characters' in data:
-            sync_characters_task.delay(server.id, data['characters'], request.GET)
-
-        if 'clans' in data:
-            sync_clans_task.delay(server.id, data['clans'])
-
-        server.last_sync = timezone.now()
-        server.save()
-
-        delete_old_history.delay()
         return HttpResponse(status=200)

@@ -1,4 +1,3 @@
 # flake8: noqa
 from .ginfo import sync_ginfo
-from .characters import sync_characters
-from .clans import sync_clans
+from .serverdata import sync_server_data
