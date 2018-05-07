@@ -47,7 +47,7 @@ class CharacterSerializer(serpy.Serializer):
     level          = serpy.Field()
     is_online      = serpy.Field()
     location       = CharacterLocationField()
-    clan_name      = serpy.Field(attr='clan.name')
+    clan_name      = serpy.MethodField()
     created        = DatetimeToUnixField()
     last_online    = DatetimeToUnixField()
     last_killed_by = serpy.Field()
