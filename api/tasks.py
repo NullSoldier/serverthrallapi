@@ -16,6 +16,6 @@ def sync_server_data_task(sync_data_id, request_get_params):
 
 
 @app.task()
-def delete_old_history():
+def delete_old_history_task():
     history_threshold = timezone.now() - timedelta(days=5)
     CharacterHistory.objects.filter(created__lt=history_threshold).delete()
