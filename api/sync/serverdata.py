@@ -44,7 +44,7 @@ def sync_characters(server, data):
         character.server         = server
         character.clan_id        = None
         character.conan_id       = sync_data['conan_id']
-        character.conan_clan_id  = sync_data['clan_id']
+        character.conan_clan_id  = sync_data.get('clan_id')
         character.name           = sync_data['name']
         character.level          = sync_data['level']
         character.is_online      = sync_data['is_online']
