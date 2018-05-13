@@ -7,7 +7,6 @@ class BaseView(View):
 
     def get_servers(self):
         return (Server.objects
-            .with_online_count()
             .with_character_count())
 
     def get_server_public(self, request, server_id):

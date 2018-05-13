@@ -1,4 +1,5 @@
 import calendar
+from api.models import Character
 
 import serpy
 
@@ -66,16 +67,22 @@ class ServerAdminSerializer(serpy.Serializer):
     id              = serpy.Field()
     name            = serpy.Field()
     character_count = serpy.Field()
-    online_count    = serpy.Field()
+    online_count    = serpy.MethodField()
     private_secret  = serpy.Field()
     ip_address      = serpy.Field()
     last_sync       = DatetimeToUnixField()
+
+    def get_online_count(self, server):
+        return Character.objects.filter(server=server).count()
 
 
 class ServerSerializer(serpy.Serializer):
     id              = serpy.Field()
     name            = serpy.Field()
     character_count = serpy.Field()
-    online_count    = serpy.Field()
+    online_count    = serpy.MethodField()
     ip_address      = serpy.Field()
     last_sync       = DatetimeToUnixField()
+
+    def get_online_count(self, server):
+        return Character.objects.filter(server=server, is_online=True).count()
