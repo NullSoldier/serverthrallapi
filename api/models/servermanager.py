@@ -20,7 +20,9 @@ class ServerManager(models.QuerySet):
         from api.models import Character
 
         count_online = (Character.objects
-            .filter(server=OuterRef('id'))
+            .filter(server=OuterRef('pk'))
+            .order_by()
+            .values('server')
             .annotate(count=Count('*'))
             .values('count'))
 
