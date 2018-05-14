@@ -113,6 +113,23 @@ def fix_primary_keys(character_map, clan_map):
             clan.save()
 
 
+def get_int(data, key, default=None):
+    if key not in data:
+        return default
+    try:
+        return int(data[key])
+    except ValueError:
+        return default
+
+
+def remove_outer_quotes(value):
+    if value.startswith('"'):
+        value = value[1:]
+    if value.endswith('"'):
+        value = value[:len(value) - 1]
+    return value
+
+
 def sync_server_data(sync_data_id, request_get_params):
     sync_data = (ServerSyncData.objects
         .filter(id=sync_data_id)
@@ -120,7 +137,7 @@ def sync_server_data(sync_data_id, request_get_params):
         .first())
 
     if sync_data is None:
-        print "Dropping sync request because data is invalid"
+        print 'Dropping sync request because data is invalid'
         return
 
     sync_data.delete()
@@ -135,8 +152,11 @@ def sync_server_data(sync_data_id, request_get_params):
 
     with transaction.atomic():
         if 'server' in data:
-            server.name = data['server'].get('name', '')
+            server.name = remove_outer_quotes(data['server'].get('name', ''))
             server.ip_address = data['server'].get('ip_address', '')
+            server.query_port = get_int(data['server'], 'query_port')
+            server.max_players = get_int(data['server'], 'max_players')
+            server.tick_rate = get_int(data['server'], 'tick_rate')
 
         if 'characters' in data:
             character_map, changed_character_ids = sync_characters(server, data['characters'])
