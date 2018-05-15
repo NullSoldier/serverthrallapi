@@ -72,6 +72,7 @@ class ServerSerializer(serpy.Serializer):
     query_port      = serpy.Field()
     tick_rate       = serpy.Field()
     max_players     = serpy.Field()
+    version         = serpy.Field()
     last_sync       = DatetimeToUnixField()
 
     def get_online_count(self, server):
