@@ -151,6 +151,9 @@ def sync_server_data(sync_data_id, request_get_params):
     changed_character_ids = []
 
     with transaction.atomic():
+        if 'version' in data:
+            server.version = data['version']
+
         if 'server' in data:
             server.name = remove_outer_quotes(data['server'].get('name', ''))
             server.ip_address = data['server'].get('ip_address', '')
