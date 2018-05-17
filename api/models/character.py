@@ -14,9 +14,9 @@ class Character(models.Model):
     created        = models.DateTimeField(auto_now_add=True)
     clan           = models.ForeignKey('api.Clan', related_name='members', null=True)
     server         = models.ForeignKey('api.Server', related_name='characters')
-    x              = models.FloatField()
-    y              = models.FloatField()
-    z              = models.FloatField()
+    x              = models.FloatField(null=True)
+    y              = models.FloatField(null=True)
+    z              = models.FloatField(null=True)
 
     objects = CharacterManager.as_manager()
 
