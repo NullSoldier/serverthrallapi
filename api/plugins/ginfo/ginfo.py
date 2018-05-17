@@ -73,6 +73,9 @@ class GinfoPlugin(object):
           @param access_token:
                     Access token for the ginfo group
         """
+        if character.x is None or character.y is None:
+            return
+
         (lat, lng) = self.convert_position(
             float(character.x), float(character.y))
 
