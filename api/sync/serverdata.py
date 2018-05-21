@@ -120,6 +120,8 @@ def get_int(data, key, default=None):
         return int(data[key])
     except ValueError:
         return default
+    except TypeError:
+        return default
 
 
 def remove_outer_quotes(value):
