@@ -7,3 +7,4 @@ newrelic-admin run-program \
     --app=serverthrallapi.celery_app \
     --beat \
     --scheduler django
+    --queues default,sync_rest,sync_rcon

@@ -1,6 +1,6 @@
 import os
-import json
 import dj_database_url
+from kombu import Exchange, Queue
 
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'DEVELOPMENT')
 
@@ -91,8 +91,29 @@ USE_TZ = True
 
 # Celery
 CELERY_TASK_ALWAYS_EAGER = DEBUG
+CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 CELERY_BROKER_URL = os.environ.get('RABBITMQ_BIGWIG_URL')
 
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TASK_DEFAULT_EXCHANGE = 'default'
+CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
+
+CELLERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('sync_rest', Exchange('default'), routing_key='sync_rest'),
+    Queue('sync_rcon', Exchange('default'), routing_key='sync_rcon'),
+)
+
+CELERY_BEAT_SCHEDULE = {
+    'sync_all_rcon_servers': {
+        'task': 'api.tasks.sync_all_rcon_servers_task',
+        'schedule': 2 * 60,
+        'args': [],
+        'options': {'queue': 'sync_rcon'}
+    }
+}
 
 ST_ENABLE_HISTORY = os.environ.get('ST_ENABLE_HISTORY', 'false').lower().startswith('true')

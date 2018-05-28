@@ -11,3 +11,4 @@ psycopg2==2.6.2
 pytz==2017.2
 requests==2.18.1
 serpy==0.1.1
+python-valve==0.2.1
