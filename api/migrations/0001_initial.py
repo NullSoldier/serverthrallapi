@@ -6,27 +6,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-# Functions from the following migrations need manual copying.
-# Move them and any dependencies into this file, then update the
-# RunPython operations to refer to the local versions:
-# api.migrations.0002_add_test_data
-
 class Migration(migrations.Migration):
-
-    replaces = [
-        (b'api', '0001_initial'),
-        (b'api', '0002_add_test_data'),
-        (b'api', '0003_remove_server_public_secret'),
-        (b'api', '0004_characterhistory'),
-        (b'api', '0005_ginfocharacter'),
-        (b'api', '0006_clan'),
-        (b'api', 'add_clan_id'),
-        (b'api', '0001_server_ip_address'),
-        (b'api', '0002_clean_data_schema'),
-        (b'api', '0003_add_server_fields'),
-        (b'api', '0004_server_version'),
-        (b'api', '0005_make_location_nullable')
-    ]
 
     initial = True
 
