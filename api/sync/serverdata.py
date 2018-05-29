@@ -183,6 +183,3 @@ def sync_server_data(sync_data_id, request_get_params):
         sync_ginfo_task.delay(changed_character_ids,
             request_get_params['ginfo_group_uid'],
             request_get_params['ginfo_access_token'])
-
-    from api.tasks import delete_old_history_task
-    delete_old_history_task.delay()
