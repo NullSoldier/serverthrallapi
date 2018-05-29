@@ -78,4 +78,8 @@ class ServerSerializer(serpy.Serializer):
 
 
 class ServerAdminSerializer(ServerSerializer):
-    private_secret  = serpy.Field()
+    private_secret = serpy.Field()
+    sync_rcon      = serpy.Field()
+    rcon_host      = serpy.Field()
+    rcon_password  = serpy.Field()
+    rcon_port      = serpy.Field()
