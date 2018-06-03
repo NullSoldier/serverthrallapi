@@ -8,3 +8,4 @@ from .server import ServerView
 from .servers import ServersView
 from .sync import SyncCharactersView
 from .clancharacters import ClanCharactersView
+from .widgets import *

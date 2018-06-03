@@ -19,6 +19,7 @@ class ClanView(BaseView):
                 server_id=server.id,
                 id=clan_id)
             .with_character_count()
+            .with_active_count()
             .first())
 
         if clan is None:
