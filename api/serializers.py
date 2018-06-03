@@ -34,7 +34,10 @@ class ClanSerializer(serpy.Serializer):
     owner_name      = serpy.MethodField()
     character_count = serpy.Field()
     created         = DatetimeToUnixField()
-    active_count    = serpy.Field()
+    active_count    = serpy.MethodField()
+
+    def get_active_count(self, item):
+        return item.active_count if item.active_count else 0
 
     def get_owner_name(self, item):
         return item.owner.name if item.owner is not None else None
