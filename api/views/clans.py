@@ -19,6 +19,7 @@ class ClansView(BaseView):
             .select_related('owner')
             .with_character_count()
             .with_active_count()
+            .filter(active_count__gt=0)
             .all())
 
         serialized = ClanSerializer(clans, many=True).data
