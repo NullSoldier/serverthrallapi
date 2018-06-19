@@ -37,7 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
+    'corsheaders',
+    'api',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'serverthrallapi.urls'
@@ -118,3 +124,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Celery
+CELERY_TASK_ALWAYS_EAGER = DEBUG
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = os.environ.get('RABBITMQ_BIGWIG_URL')
+
+
+ST_ENABLE_HISTORY = os.environ.get('ST_ENABLE_HISTORY', 'false').lower().startswith('true')
