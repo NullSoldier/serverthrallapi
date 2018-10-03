@@ -115,8 +115,11 @@ class GinfoPlugin(object):
         try:
             json_data = response.json()
             if "error" in json_data:
-                # TODO: Use proper logger
-                print "Error from Ginfo Firebase: " + json_data["error"]
+                message = "Error from Ginfo Firebase: " + json_data["error"] + "\n"
+                message += "ServerId: " + character.server_id + "\n"
+                message += "Group: " + group  + "\n"
+                message += "AccessToken: " + access_token
+                print message
         except:
             pass
 
