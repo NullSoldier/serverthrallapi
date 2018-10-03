@@ -7,7 +7,7 @@ flake8==3.3.0
 gunicorn==19.6.0
 isort==4.2.5
 newrelic==2.88.1.73
-psycopg2==2.6.2
+psycopg2==2.7.5
 pytz==2017.2
 requests==2.18.1
 serpy==0.1.1
