@@ -178,7 +178,7 @@ def sync_server_data(sync_data_id, request_get_params):
         'ginfo_group_uid' in request_get_params and
         'ginfo_access_token' in request_get_params)
 
-    if has_ginfo:
+    if has_ginfo and settings.ST_ENABLE_GINFO:
         from api.tasks import sync_ginfo_task
         sync_ginfo_task.delay(changed_character_ids,
             request_get_params['ginfo_group_uid'],

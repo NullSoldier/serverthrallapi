@@ -94,5 +94,5 @@ CELERY_TASK_ALWAYS_EAGER = DEBUG
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BROKER_URL = os.environ.get('RABBITMQ_BIGWIG_URL')
 
-
 ST_ENABLE_HISTORY = os.environ.get('ST_ENABLE_HISTORY', 'false').lower().startswith('true')
+ST_ENABLE_GINFO = os.environ.get('ST_ENABLE_GINFO', 'false').lower().startswith('true')
