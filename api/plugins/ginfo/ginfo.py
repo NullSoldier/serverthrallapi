@@ -109,7 +109,7 @@ class GinfoPlugin(object):
         }
 
         response = requests.patch(
-            url=self.API_URL + '/.json',
+            url=self.API_URL + '/.json?print=silent',
             json=data
         )
         try:
