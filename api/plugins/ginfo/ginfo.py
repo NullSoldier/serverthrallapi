@@ -109,9 +109,11 @@ class GinfoPlugin(object):
         }
 
         response = requests.patch(
-            url=self.API_URL + '/.json?print=silent',
-            json=data
+            url=self.API_URL + '/.json',
+            params={'print': 'silent'},
+            json=data,
         )
+
         try:
             json_data = response.json()
             if "error" in json_data:
@@ -119,7 +121,7 @@ class GinfoPlugin(object):
                 message += "ServerId: " + character.server_id + "\n"
                 message += "Group: " + group  + "\n"
                 message += "AccessToken: " + access_token
-                print message
+                print(message)
         except:
             pass
 
@@ -131,7 +133,7 @@ class SphericalMercator(object):
     @staticmethod
     def project(lat, lng):
         """
-          Converts a lat/lng coordiante to a x/y point
+          Converts a lat/lng coordiante to a x/y point.
         """
         d = math.pi / 180.0
         lat = max(
