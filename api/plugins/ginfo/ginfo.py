@@ -10,7 +10,7 @@ class GinfoPlugin(object):
     """
       GinfoPlugin provides methods to post a position to the ginfo firebase database
     """
-    API_URL = 'https://ginfo-34baa.firebaseio.com'
+    API_URL = 'https://api.ginfo.gg'
     GAME = 'conanexiles'
     MAP = 'conanexiles_desert'
     SERVERTHRALL_USER_UID = 'y67Efa3kddSuhb26UoUapIJakMh1'
@@ -18,23 +18,14 @@ class GinfoPlugin(object):
     def __init__(self):
         self.uid_generator = PushID()
 
-    def marker_path(self, group, marker):
+    def url(self, group, marker):
         """
-            Returns the path to which a marker has to be posted in the firebase database
+            Returns the url to which a marker has to be posted
 
             @param group: UID of the ginfo group for which the marker should be posted
             @param marker: UID of the marker that should be posted
         """
-        return 'games/%s/groups/%s/maps/%s/markers/%s' % (self.GAME, group, self.MAP, marker)
-
-    def access_token_path(self, group, marker):
-        """
-            Returns the path to which the groups access token has to be posted in the firebase database
-
-            @param group: UID of the ginfo group for which the marker should be posted
-            @param marker: UID of the marker that should be posted
-        """
-        return 'groupAccessTokenVerifier/%s/%s' % (group, marker)
+        return '%s/games/%s/groups/%s/maps/%s/markers/%s' % (self.API_URL, self.GAME, group, self.MAP, marker)
 
     TRANSFORMATION_KX = 50.60049940473328
     TRANSFORMATION_KY = -50.83608443474857
@@ -86,31 +77,28 @@ class GinfoPlugin(object):
             ginfo_character.save()
 
         data = {
-            self.marker_path(group, ginfo_character.ginfo_marker_uid): {
-                "name": character.name,
-                "updatedAt": {
-                    # This tells firebase to use its internal timestamp
-                    ".sv": "timestamp"
-                },
-                "createdAt": {
-                    # This tells firebase to use its internal timestamp
-                    ".sv": "timestamp"
-                },
-                "color": self.DEFAULT_MARKER_COLOR,
-                "creatorId": self.SERVERTHRALL_USER_UID,
-                "position": {
-                    "lat": lat,
-                    "lng": lng
-                },
-                "type": self.DEFAULT_MARKER_TYPE,
-                "skin": self.DEFAULT_MARKER_SKIN,
+            "name": character.name,
+            "updatedAt": {
+                # This tells firebase to use its internal timestamp
+                ".sv": "timestamp"
             },
-            self.access_token_path(group, ginfo_character.ginfo_marker_uid): access_token
+            "createdAt": {
+                # This tells firebase to use its internal timestamp
+                ".sv": "timestamp"
+            },
+            "color": self.DEFAULT_MARKER_COLOR,
+            "creatorId": self.SERVERTHRALL_USER_UID,
+            "position": {
+                "lat": lat,
+                "lng": lng
+            },
+            "type": self.DEFAULT_MARKER_TYPE,
+            "skin": self.DEFAULT_MARKER_SKIN,
         }
 
-        response = requests.patch(
-            url=self.API_URL + '/.json',
-            params={'print': 'silent'},
+        response = requests.put(
+            url=self.url(group, ginfo_character.ginfo_marker_uid),
+            params={'accessToken': access_token},
             json=data,
         )
 
