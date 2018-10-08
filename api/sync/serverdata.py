@@ -33,9 +33,9 @@ def sync_characters(server, data):
             character = Character()
 
         has_moved = (
-            (sync_data['x'] == character.x) or
-            (sync_data['y'] == character.y) or
-            (sync_data['z'] == character.y))
+            (sync_data['x'] != character.x) or
+            (sync_data['y'] != character.y) or
+            (sync_data['z'] != character.z))
 
         last_online = (datetime
             .utcfromtimestamp(sync_data['last_online'])
